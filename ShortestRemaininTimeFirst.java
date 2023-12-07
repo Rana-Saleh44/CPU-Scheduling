@@ -1,6 +1,4 @@
 import java.util.PriorityQueue;
-import java.time.Instant;
-import java.time.LocalDateTime;
 
 public class ShortestRemaininTimeFirst {
     private PriorityQueue<Process> processes;
@@ -20,14 +18,17 @@ public class ShortestRemaininTimeFirst {
     public void RunSRTF(){
         while(!processes.isEmpty()){
             Process p = processes.poll();
-            LocalDateTime date = LocalDateTime.now();
-            Instant instant = date.atZone(date.getZone()).toInstant();
-            long starttime = instant.toEpochMilli();
+            Process p2 = processes.peek();
+            int starttime = p.getArrivalTime();
             p.WaitingTime += starttime - p.getArrivalTime();
-            p.TurnaroundTime = p.WaitingTime + p.getBurstTime();
+            p.TurnaroundTime += p.WaitingTime + p.getBurstTime();
             System.out.println("Time: "+ starttime + " ::Process " + p.getID());
+            starttime++;
             p.remBurstTime--;
-            if(p.remBurstTime > 0){
+            /*if(p.remBurstTime > 0){
+                processes.add(p);
+            }*/
+            if(starttime == p2.getArrivalTime()){
                 processes.add(p);
             }
         }
