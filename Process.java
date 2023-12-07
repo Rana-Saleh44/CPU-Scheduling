@@ -4,6 +4,9 @@ public class Process {
     private int BurstTime;
     private int PriorityNumber;
     private String color;
+    public long WaitingTime;
+    public long TurnaroundTime;
+    public int remBurstTime;
 
 
     public Process(String ID, int ArrivalTime, int BurstTime, int PriorityNumber) {
@@ -11,6 +14,9 @@ public class Process {
         this.ArrivalTime = ArrivalTime;
         this.BurstTime = BurstTime;
         this.PriorityNumber = PriorityNumber;
+        this.WaitingTime = 0;
+        this.TurnaroundTime = 0;
+        this.remBurstTime = BurstTime;
     }
 
     public String getID() {
@@ -32,7 +38,6 @@ public class Process {
     public int getPriorityNumber() {
         return PriorityNumber;
     }
-
     public void setID(String ID) {
         this.ID = ID;
     }
@@ -48,7 +53,6 @@ public class Process {
     public void setBurstTime(int burstTime) {
         BurstTime = burstTime;
     }
-
     public void setPriorityNumber(int priorityNumber) {
         PriorityNumber = priorityNumber;
     }
