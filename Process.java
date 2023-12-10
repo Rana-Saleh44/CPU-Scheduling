@@ -1,7 +1,8 @@
-public class Process {
+public class Process implements Comparable<Process>{
     private String ID;
     private int ArrivalTime;
     private int BurstTime;
+    public int StartTime;
     private int PriorityNumber;
     private String color;
     public long WaitingTime;
@@ -9,16 +10,21 @@ public class Process {
     public int remBurstTime;
 
 
-    public Process(String ID, int ArrivalTime, int BurstTime, int PriorityNumber) {
+    public Process(String ID, int ArrivalTime, int BurstTime, int PriorityNumber, String color) {
         this.ID = ID;
         this.ArrivalTime = ArrivalTime;
         this.BurstTime = BurstTime;
         this.PriorityNumber = PriorityNumber;
+        this.color = color;
+        this.StartTime = 0;
         this.WaitingTime = 0;
         this.TurnaroundTime = 0;
         this.remBurstTime = BurstTime;
     }
-
+    @Override
+    public int compareTo(Process p){
+        return Integer.compare(this.remBurstTime, p.remBurstTime);
+    }
     public String getID() {
         return ID;
     }
