@@ -9,6 +9,25 @@ public class Process implements Comparable<Process>{
     public long TurnaroundTime;
     public int remBurstTime;
 
+    private int AG;
+    private double QuantumTime;
+
+    public double getQuantumTime() {
+        return QuantumTime;
+    }
+
+    public void setQuantumTime(double quantumTime) {
+        QuantumTime = quantumTime;
+    }
+
+    public int getAG() {
+        return AG;
+    }
+
+    public void setAG(int AG) {
+        this.AG = AG;
+    }
+
 
     public Process(String ID, int ArrivalTime, int BurstTime, int PriorityNumber, String color) {
         this.ID = ID;
