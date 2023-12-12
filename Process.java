@@ -1,5 +1,5 @@
 public class Process implements Comparable<Process>{
-    private String ID;
+    private String Name;
     private int ArrivalTime;
     private int BurstTime;
     public int StartTime;
@@ -29,8 +29,8 @@ public class Process implements Comparable<Process>{
     }
 
 
-    public Process(String ID, int ArrivalTime, int BurstTime, int PriorityNumber, String color) {
-        this.ID = ID;
+    public Process(String Name, int ArrivalTime, int BurstTime, int PriorityNumber, String color) {
+        this.Name = Name;
         this.ArrivalTime = ArrivalTime;
         this.BurstTime = BurstTime;
         this.PriorityNumber = PriorityNumber;
@@ -42,10 +42,10 @@ public class Process implements Comparable<Process>{
     }
     @Override
     public int compareTo(Process p){
-        return Integer.compare(this.remBurstTime, p.remBurstTime);
+        return Integer.compare(this.ArrivalTime, p.getArrivalTime());
     }
     public String getID() {
-        return ID;
+        return Name;
     }
 
     public String getColor() {
@@ -64,7 +64,7 @@ public class Process implements Comparable<Process>{
         return PriorityNumber;
     }
     public void setID(String ID) {
-        this.ID = ID;
+        this.Name = ID;
     }
 
     public void setColor(String color) {
