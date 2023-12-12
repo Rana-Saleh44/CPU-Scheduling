@@ -1,70 +1,54 @@
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Collections;
 
 public class ShortestRemaininTimeFirst {
-    private ArrayList<Process> pArrayList;
-    private ArrayList<Process> pArrayList2;
-    private ArrayList<Process> res;
+    private Vector<Process> pVector;                      // for Entering processes
+    private Vector<Process> pVector2;                     // for complete processes
+    private Vector<Process> res;                          // for result schedule
     private double AvgWaitingTime;
     private double AvgTurnaroundTime;
     public ShortestRemaininTimeFirst(){
-        this.pArrayList = new ArrayList<>();
-        this.pArrayList2 = new ArrayList<>();
-        this.res = new ArrayList<>();
+        this.pVector = new Vector<>();
+        this.pVector2 = new Vector<>();
+        this.res = new Vector<>();
         this.AvgWaitingTime = 0.0;
         this.AvgTurnaroundTime = 0.0;
     } 
     public void Adding(Process p){
-        pArrayList.add(p);
+        pVector.add(p);
     }
     private boolean terminated(){
-        for(Process process: pArrayList){
+        for(Process process: pVector){
             if(process.remBurstTime != 0){
                 return false;
             }
         }
         return true;
     }
-    private Process LEASTBurstTime(int currenttime){
+    public Process LEASTBurstTime(int currenttime){
         int MinimumBurstTime = 1000;
         int index = 0;
-        for(int i = 0; i < this.pArrayList.size() && this.pArrayList.get(i).getArrivalTime() <= currenttime; i++){
-            if(this.pArrayList.get(i).remBurstTime < MinimumBurstTime && this.pArrayList.get(i).remBurstTime != 0){
-                MinimumBurstTime = this.pArrayList.get(i).remBurstTime;
+        for(int i = 0; i < this.pVector.size() && this.pVector.get(i).getArrivalTime() <= currenttime; i++){
+            if(this.pVector.get(i).remBurstTime < MinimumBurstTime && this.pVector.get(i).remBurstTime != 0){
+                MinimumBurstTime = this.pVector.get(i).remBurstTime;
                 index = i;
             }
         }
-        return this.pArrayList.get(index);
+        return this.pVector.get(index);
     }
     private int getIndex(Process p){
-        int i = 0;
-        while (i < pArrayList.size()) {
-            if(this.pArrayList.get(i).getID() == p.getID()){
-                return i;
-            }
-            i++;
-        }
-        return -1;
-    }
+        return this.pVector.indexOf(p);
+   }
     public void RunSRTF(){
         Process p;
         int index;
         int time;
-        Collections.sort(pArrayList);
-        for(time  = this.pArrayList.get(0).getArrivalTime(); !this.terminated(); ){
-            /*p = this.pArrayList.get(0);
-            p.remBurstTime--;
-            time++;
-            index = getIndex(p);
-            Process q = this.LEASTBurstTime(time);
-            if(p.remBurstTime > q.remBurstTime){
-                this.pArrayList.remove(p);
-            }
-            res.add(p);*/
+        Collections.sort(pVector);
+        for(time  = this.pVector.get(0).getArrivalTime(); !this.terminated(); ){
             p = this.LEASTBurstTime(time);
             index = this.getIndex(p);
-            if(this.pArrayList.get(index).remBurstTime != 0){
-                this.pArrayList.get(index).StartTime = time;
+            if(this.pVector.get(index).remBurstTime != 0){
+                this.pVector.get(index).StartTime = time;
             }
             while (p.remBurstTime > 0) {
                 Process q = this.LEASTBurstTime(time);
@@ -74,13 +58,13 @@ public class ShortestRemaininTimeFirst {
                 p.remBurstTime--;
                 time++;
             }
-            this.pArrayList.get(index).WaitingTime += this.pArrayList.get(index).StartTime - this.pArrayList.get(index).getBurstTime();
-            this.pArrayList.get(index).TurnaroundTime = this.pArrayList.get(index).WaitingTime + this.pArrayList.get(index).getBurstTime();
-            System.out.println("Time: "+ this.pArrayList.get(index).StartTime + " ::Process " + this.pArrayList.get(index).getID() + " => Waiting Time = "+ this.pArrayList.get(index).WaitingTime + ",  TurnAround Time = "+ this.pArrayList.get(index).TurnaroundTime);
-            this.pArrayList.get(index).setArrivalTime(time);
-            if(pArrayList.get(index).remBurstTime == 0){
-                this.pArrayList2.add(p);
-                this.pArrayList.remove(p);
+            this.pVector.get(index).WaitingTime += this.pVector.get(index).StartTime - this.pVector.get(index).getArrivalTime();
+            this.pVector.get(index).TurnaroundTime = this.pVector.get(index).WaitingTime + this.pVector.get(index).getBurstTime() - this.pVector.get(index).remBurstTime;
+            System.out.println("Time: "+ this.pVector.get(index).StartTime + " ::Process " + this.pVector.get(index).getID() + " => Waiting Time = "+ this.pVector.get(index).WaitingTime + ",  TurnAround Time = "+ this.pVector.get(index).TurnaroundTime);
+            this.pVector.get(index).setArrivalTime(time);
+            if(pVector.get(index).remBurstTime == 0){
+                this.pVector2.add(p);
+                this.pVector.remove(p);
             }
             res.add(p);
         }
@@ -88,13 +72,13 @@ public class ShortestRemaininTimeFirst {
     public void Printing(){
         double totalwait = 0.0;
         double totalturnaround = 0.0;
-        for (Process process : pArrayList2) {
+        for (Process process : pVector2) {
             System.out.println("ID: " + process.getID() + ", Color: " + process.getColor());
             totalwait += process.WaitingTime;
             totalturnaround += process.TurnaroundTime;
         }
-        this.AvgWaitingTime = totalwait / pArrayList2.size();
-        this.AvgTurnaroundTime = totalturnaround / pArrayList2.size();
+        this.AvgWaitingTime = totalwait / pVector2.size();
+        this.AvgTurnaroundTime = totalturnaround / pVector2.size();
         System.out.println("Average Waiting Time = " + AvgWaitingTime);
         System.out.println("Average TurnAround Time = "+ AvgTurnaroundTime);
     }
