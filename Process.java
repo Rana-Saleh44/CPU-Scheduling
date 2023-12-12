@@ -10,8 +10,8 @@ public class Process implements Comparable<Process>{
     public int remBurstTime;
 
 
-    public Process(String ID, int ArrivalTime, int BurstTime, int PriorityNumber, String color) {
-        this.Name = ID;
+    public Process(String Name, int ArrivalTime, int BurstTime, int PriorityNumber, String color) {
+        this.Name = Name;
         this.ArrivalTime = ArrivalTime;
         this.BurstTime = BurstTime;
         this.PriorityNumber = PriorityNumber;
