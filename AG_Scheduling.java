@@ -3,35 +3,24 @@ import java.util.*;
 public class AG_Scheduling {
     private double AvgWaitingTime = 0;
     private double AvgTurnaroundTime = 0;
-    private Map<String,Double> waitingTime = new HashMap<>();
+    private Map<String, Double> waitingTime = new HashMap<>();
     private int AG_Factor = 0;
 
-    private Queue<Process> WaitingQueue = new PriorityQueue<>(new Comparator<Process>() {
-        @Override
-        public int compare(Process o1, Process o2) {
-            return Integer.compare(o1.getArrivalTime(), o2.getArrivalTime());
-        }
-    });
+    private Queue<Process> WaitingQueue = new LinkedList<>();
     private Queue<Process> ReadyQueue = new LinkedList<>();
 
-    private void SortQueue() {
-        if (!ReadyQueue.isEmpty()) {
-            Queue<Process> temp = new PriorityQueue<>(ReadyQueue.size(), new Comparator<Process>() {
-                @Override
-                public int compare(Process o1, Process o2) {
-                    int result = Integer.compare(o1.getAG(), o2.getAG());
-                    if (result != 0) {
-                        return result;
-                    } else {
-                        return Integer.compare(o1.getAG(), o2.getAG());
-                    }
-                }
-            });
-            temp.addAll(ReadyQueue);
-            ReadyQueue.clear();
-            ReadyQueue.addAll(temp);
+    /*private void AddToReadyQueue(double clock) {
+        for (Process process : WaitingQueue) {
+            if(process.getArrivalTime() <=0){
+                ReadyQueue.add(process);
+                WaitingQueue.remove(process);
+            }
+            else if (process.getArrivalTime() <=clock) {
+                ReadyQueue.add(process);
+                WaitingQueue.remove(process);
+            }
         }
-    }
+    }*/
 
     public void Adding_Process(Process process, int q) {
         Random random = new Random();
@@ -52,25 +41,33 @@ public class AG_Scheduling {
             process.setQuantumTime(q);
             System.out.println(AG_Factor);
         }
-        WaitingQueue.add(process);
         ReadyQueue.add(process);
+        //WaitingQueue.add(process);
+        //AddToReadyQueue(0);
     }
 
-    public void check(int time) {
-        for (Process process : WaitingQueue) {
-            process.setArrivalTime(process.getArrivalTime() - time);
-            if (process.getArrivalTime() >= 0) {
-                ReadyQueue.add(process);
+    private Process pick() {
+        int min_AG = Integer.MAX_VALUE;
+        Process p = null;
+        if (!ReadyQueue.isEmpty()) {
+            for (Process process : ReadyQueue) {
+                if (process.getAG() <= min_AG) {
+                    min_AG = process.getAG();
+                    p = process;
+                }
             }
         }
+        ReadyQueue.remove(p);
+        return p;
     }
 
     public void RUN_AG() {
         Process process;
+        double clock = 0;
         process = ReadyQueue.poll();
         while (process != null) {
             double time = Math.ceil(0.5 * process.getQuantumTime());
-            waitingTime.put(process.getID(), (double) Math.max(0,process.getArrivalTime()));
+            waitingTime.put(process.getID(), (double) Math.max(0, process.getArrivalTime()));
             process.setArrivalTime(0);
             if (process.remBurstTime <= 0) {
                 process.setQuantumTime(0);
@@ -80,15 +77,17 @@ public class AG_Scheduling {
             } else if (!ReadyQueue.isEmpty() && process.getAG() > ReadyQueue.peek().getAG()) {
                 if (process.getQuantumTime() > ReadyQueue.peek().getArrivalTime() && ReadyQueue.peek().getArrivalTime() != 0) {
                     process.remBurstTime = process.remBurstTime - ReadyQueue.peek().getArrivalTime();
-                    process.setQuantumTime(process.getQuantumTime() + (time - ReadyQueue.peek().getArrivalTime()));
+                    process.setQuantumTime(process.getQuantumTime() + (ReadyQueue.peek().getArrivalTime() - time));
                     System.out.println("Process " + process.getID() + " execute-1 " + ReadyQueue.peek().getArrivalTime());
+                    ReadyQueue.add(process);
+                    process = ReadyQueue.poll();
                 } else {
                     process.remBurstTime = (int) (process.remBurstTime - time);
                     process.setQuantumTime(process.getQuantumTime() + (process.getQuantumTime() - time));
                     System.out.println("Process " + process.getID() + " execute-2 " + time);
+                    ReadyQueue.add(process);
+                    process = pick();
                 }
-                ReadyQueue.add(process);
-                process = ReadyQueue.poll();
             } else {
                 if (process.getQuantumTime() > process.remBurstTime) {
                     System.out.println("Process " + process.getID() + " execute-3 " + process.remBurstTime);
@@ -100,7 +99,7 @@ public class AG_Scheduling {
                 for (Process p : ReadyQueue) {
                     x = x + p.getQuantumTime();
                 }
-                if(ReadyQueue.size()!=0){
+                if (ReadyQueue.size() != 0) {
                     x = x / ReadyQueue.size();
                 }
                 time = Math.ceil(0.1 * x);
@@ -110,6 +109,11 @@ public class AG_Scheduling {
                     process = ReadyQueue.poll();
                 }
             }
+            if (ReadyQueue.isEmpty() && process == null) {
+                ReadyQueue.add(WaitingQueue.peek());
+                process = ReadyQueue.poll();
+            }
         }
+
     }
 }
