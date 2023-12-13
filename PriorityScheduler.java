@@ -7,7 +7,7 @@ import java.util.*;
 
 public class PriorityScheduler {
     Process p1 = new Process("Process 1",0,7,3, "Red");
-    Process p2 = new Process("Process 2",2,5,1, "Green");
+    Process p2 = new Process("Process 2",2,5,11, "Green");
     Process p3 = new Process("Process 3",3,8,2, "Yellow");
     ArrayList<Process> Processes = new ArrayList<>();
     PriorityScheduler()
@@ -26,6 +26,12 @@ public class PriorityScheduler {
         {
             tempWait = waitingTime;
             turnAroundTime = tempWait + process.getBurstTime();
+          //  waitingTime += process.getBurstTime() + 3;
+            if (waitingTime > 10)
+            {
+                int newPriority = Math.max(process.getPriorityNumber() - 1, 0);
+                process.setPriorityNumber(newPriority);
+            }
             waitingTime += process.getBurstTime() + 3;
             totalWaitingTime += tempWait;
             totalTurnaroundTime += turnAroundTime;
