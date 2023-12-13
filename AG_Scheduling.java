@@ -6,6 +6,8 @@ public class AG_Scheduling {
     private double AvgTurnaroundTime = 0;
     private Map<String, Double> waitingTime = new HashMap<>();
     private Map<String, Double> Turnaround = new HashMap<>();
+    private LinkedList<Integer> arrival = new LinkedList<>();
+    private LinkedList<Process> DieList = new LinkedList<>();
     private int AG_Factor = 0;
 
     private Queue<Process> WaitingQueue = new LinkedList<>();
@@ -44,8 +46,9 @@ public class AG_Scheduling {
             System.out.println(AG_Factor);
         }
         ReadyQueue.add(process);
-        Turnaround.put(process.getID(), 0.0);
-        waitingTime.put(process.getID(),0.0);
+        Turnaround.put(process.getID(), process.getQuantumTime() - process.getArrivalTime());
+        arrival.add(process.getArrivalTime());
+        waitingTime.put(process.getID(), 0.0);
     }
 
     private Process pick() {
@@ -65,9 +68,6 @@ public class AG_Scheduling {
     public void RUN_AG() {
         Process process;
         double CurrentTime = 0;
-        double pCurrent = 0;
-        double x = 0;
-        double y = 0;
         process = ReadyQueue.poll();
         while (process != null) {
             double time = Math.ceil(0.5 * process.getQuantumTime());
@@ -76,13 +76,13 @@ public class AG_Scheduling {
                 process.setQuantumTime(0);
                 System.out.println("Process " + process.getID() + " finished");
                 ReadyQueue.remove(process);
+                DieList.add(process);
                 process = ReadyQueue.poll();
             } else if (!ReadyQueue.isEmpty() && process.getAG() > pick().getAG()) {
                 if (process.getQuantumTime() > ReadyQueue.peek().getArrivalTime() && ReadyQueue.peek().getArrivalTime() != 0) {
                     process.remBurstTime = process.remBurstTime - ReadyQueue.peek().getArrivalTime();
                     CurrentTime = CurrentTime + ReadyQueue.peek().getArrivalTime();
-                    x = Turnaround.get(process.getID())+ReadyQueue.peek().getArrivalTime();
-                    Turnaround.put(process.getID(),x);
+                    Turnaround.put(ReadyQueue.peek().getID(), CurrentTime - ReadyQueue.peek().getArrivalTime());
                     process.setQuantumTime(process.getQuantumTime() + (ReadyQueue.peek().getArrivalTime() - time));
                     System.out.println("Process " + process.getID() + " execute-1 " + ReadyQueue.peek().getArrivalTime());
                     ReadyQueue.add(process);
@@ -90,8 +90,7 @@ public class AG_Scheduling {
                 } else {
                     process.remBurstTime = (int) (process.remBurstTime - time);
                     CurrentTime = CurrentTime + time;
-                    x =Turnaround.get(process.getID()) + time;
-                    Turnaround.put(process.getID(), x);
+                    Turnaround.put(process.getID(), CurrentTime);
                     process.setQuantumTime(process.getQuantumTime() + (process.getQuantumTime() - time));
                     System.out.println("Process " + process.getID() + " execute-2 " + time);
                     ReadyQueue.add(process);
@@ -102,13 +101,11 @@ public class AG_Scheduling {
                 if (process.getQuantumTime() > process.remBurstTime) {
                     System.out.println("Process " + process.getID() + " execute-3 " + process.remBurstTime);
                     CurrentTime = CurrentTime + process.remBurstTime;
-                    x = Turnaround.get(process.getID()) + process.remBurstTime;
                 } else {
                     System.out.println("Process " + process.getID() + " execute-4 " + process.getQuantumTime());
                     CurrentTime = CurrentTime + process.getQuantumTime();
-                    x = Turnaround.get(process.getID()) + process.getQuantumTime() ;
                 }
-                Turnaround.put(process.getID(), x);
+                Turnaround.put(process.getID(), CurrentTime);
                 process.remBurstTime = (int) (process.remBurstTime - process.getQuantumTime());
                 double mean = 0;
                 for (Process p : ReadyQueue) {
@@ -130,8 +127,28 @@ public class AG_Scheduling {
             }
         }
         System.out.println(CurrentTime);
+        double z = 0;
+        int i = 0;
         for (Map.Entry<String, Double> entry : Turnaround.entrySet()) {
+            z = Turnaround.get(entry.getKey());
+            Turnaround.put(entry.getKey(), z - arrival.get(i));
             System.out.println("Process ID: " + entry.getKey() + ", Turnaround Time: " + entry.getValue());
+            AvgTurnaroundTime = AvgWaitingTime + entry.getValue();
+            i++;
         }
+        AvgTurnaroundTime = AvgTurnaroundTime / Turnaround.size();
+        System.out.println("Average Turnaround Time: " + AvgTurnaroundTime);
+        z= 0;
+        while (!DieList.isEmpty()){
+            z = Turnaround.get(DieList.peek().getID());
+            waitingTime.put(DieList.peek().getID(), (z - DieList.peek().getBurstTime()));
+            DieList.poll();
+        }
+        for (Map.Entry<String, Double> entry : waitingTime.entrySet()) {
+            System.out.println("Process ID: " + entry.getKey() + ", Waiting Time: " + entry.getValue());
+            AvgWaitingTime = AvgWaitingTime + entry.getValue();
+        }
+        AvgWaitingTime = AvgWaitingTime / waitingTime.size();
+        System.out.println("Average Turnaround Time: " + AvgWaitingTime);
     }
 }
