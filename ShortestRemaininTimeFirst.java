@@ -63,9 +63,9 @@ public class ShortestRemaininTimeFirst {
                 index = this.pVector.indexOf(p2);
                 this.pVector.get(index).StartTime = time;
                 while (p2.remBurstTime > 0) {
-                    Process q = this.LEASTRemainingBurstTime(time);                   // nextprocess = q
+                    Process q = this.LEASTRemainingBurstTime(time);                   // nextprocess = q if p arrived to q break the loop
                     if(!q.getID().equals(p2.getID())){
-                        this.outputVector.add(p2);
+                        this.outputVector.add(p2);                                  // add p2 to outputvector to exit from loop and next process begin starting
                         break;
                     }
                     p2.remBurstTime--;
@@ -77,9 +77,9 @@ public class ShortestRemaininTimeFirst {
                 index = this.pVector.indexOf(p);
                 this.pVector.get(index).StartTime = time;
                 while (p.remBurstTime > 0) {
-                    Process q = this.LEASTRemainingBurstTime(time);               // nextprocess = q
+                    Process q = this.LEASTRemainingBurstTime(time);               // nextprocess = q if p arrived to q break the loop
                     if(!q.getID().equals(p.getID())){
-                        this.outputVector.add(p);
+                        this.outputVector.add(p);                                // add p2 to outputvector to exit from loop and next process begin starting
                         break;
                     }
                     p.remBurstTime--;
