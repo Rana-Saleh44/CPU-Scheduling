@@ -20,17 +20,14 @@ public class AG_Scheduling {
             AG_Factor = Random_Factor + process.getArrivalTime() + process.getBurstTime();
             process.setAG(AG_Factor);
             process.setQuantumTime(q);
-            System.out.println(AG_Factor);
         } else if (Random_Factor > 10) {
             AG_Factor = 10 + process.getArrivalTime() + process.getBurstTime();
             process.setAG(AG_Factor);
             process.setQuantumTime(q);
-            System.out.println(AG_Factor);
         } else {
             AG_Factor = process.getPriorityNumber() + process.getArrivalTime() + process.getBurstTime();
             process.setAG(AG_Factor);
             process.setQuantumTime(q);
-            System.out.println(AG_Factor);
         }
         WaitingQueue.add(process);
         AddToReadyQueue(4);
@@ -95,7 +92,7 @@ public class AG_Scheduling {
                     ListFroKey.add((int) process.getQuantumTime());
                     HistoryOfQuantum.put(process.getID(), ListFroKey);
                     process.setQuantumTime(process.getQuantumTime() + (ReadyQueue.peek().getArrivalTime() - time));
-                    System.out.println("Process " + process.getID() + " execute-1 " + ReadyQueue.peek().getArrivalTime());
+                    System.out.println("Process " + process.getID() + " execute " + ReadyQueue.peek().getArrivalTime());
                     ReadyQueue.add(process);
                     process = ReadyQueue.poll();
                 } else {
@@ -106,17 +103,17 @@ public class AG_Scheduling {
                     ListFroKey.add((int) process.getQuantumTime());
                     HistoryOfQuantum.put(process.getID(), ListFroKey);
                     process.setQuantumTime(process.getQuantumTime() + (process.getQuantumTime() - time));
-                    System.out.println("Process " + process.getID() + " execute-2 " + time);
+                    System.out.println("Process " + process.getID() + " execute " + time);
                     ReadyQueue.add(process);
                     process = pick();
                     ReadyQueue.remove(pick());
                 }
             } else {
                 if (process.getQuantumTime() > process.remBurstTime) {
-                    System.out.println("Process " + process.getID() + " execute-3 " + process.remBurstTime);
+                    System.out.println("Process " + process.getID() + " execute " + process.remBurstTime);
                     CurrentTime = CurrentTime + process.remBurstTime;
                 } else {
-                    System.out.println("Process " + process.getID() + " execute-4 " + process.getQuantumTime());
+                    System.out.println("Process " + process.getID() + " execute " + process.getQuantumTime());
                     CurrentTime = CurrentTime + process.getQuantumTime();
                 }
                 Turnaround.put(process.getID(), CurrentTime);
