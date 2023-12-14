@@ -1,9 +1,9 @@
-import javax.print.DocFlavor;
 import java.util.*;
 
 public class AG_Scheduling {
     private double AvgWaitingTime = 0;
     private double AvgTurnaroundTime = 0;
+    private static double CurrentTime = 0;
     private Map<String, Double> waitingTime = new HashMap<>();
     private Map<String, Double> Turnaround = new HashMap<>();
     private LinkedList<Integer> arrival = new LinkedList<>();
@@ -12,19 +12,6 @@ public class AG_Scheduling {
 
     private Queue<Process> WaitingQueue = new LinkedList<>();
     private Queue<Process> ReadyQueue = new LinkedList<>();
-
-    /*private void AddToReadyQueue(double clock) {
-        for (Process process : WaitingQueue) {
-            if(process.getArrivalTime() <=0){
-                ReadyQueue.add(process);
-                WaitingQueue.remove(process);
-            }
-            else if (process.getArrivalTime() <=clock) {
-                ReadyQueue.add(process);
-                WaitingQueue.remove(process);
-            }
-        }
-    }*/
 
     public void Adding_Process(Process process, int q) {
         Random random = new Random();
@@ -45,10 +32,18 @@ public class AG_Scheduling {
             process.setQuantumTime(q);
             System.out.println(AG_Factor);
         }
-        ReadyQueue.add(process);
+        WaitingQueue.add(process);
+        AddToReadyQueue(4);
         Turnaround.put(process.getID(), process.getQuantumTime() - process.getArrivalTime());
         arrival.add(process.getArrivalTime());
         waitingTime.put(process.getID(), 0.0);
+    }
+
+    private void AddToReadyQueue(double clock) {
+        if (!WaitingQueue.isEmpty() && WaitingQueue.peek().getArrivalTime() <= clock) {
+            ReadyQueue.add(WaitingQueue.peek());
+            WaitingQueue.remove(WaitingQueue.peek());
+        }
     }
 
     private Process pick() {
@@ -56,7 +51,7 @@ public class AG_Scheduling {
         Process p = null;
         if (!ReadyQueue.isEmpty()) {
             for (Process process : ReadyQueue) {
-                if (process.getAG() <= min_AG) {
+                if (process.getAG() <= min_AG && process.getArrivalTime() <= CurrentTime + 4) {
                     min_AG = process.getAG();
                     p = process;
                 }
@@ -65,11 +60,22 @@ public class AG_Scheduling {
         return p;
     }
 
+    private void check() {
+        for (Process process : ReadyQueue) {
+            if (process.remBurstTime <= 0) {
+                process.setQuantumTime(0);
+                System.out.println("Process " + process.getID() + " finished");
+                ReadyQueue.remove(process);
+                DieList.add(process);
+            }
+        }
+    }
+
     public void RUN_AG() {
         Process process;
-        double CurrentTime = 0;
         process = ReadyQueue.poll();
         while (process != null) {
+            check();
             double time = Math.ceil(0.5 * process.getQuantumTime());
             process.setArrivalTime(0);
             if (process.remBurstTime <= 0) {
@@ -78,7 +84,7 @@ public class AG_Scheduling {
                 ReadyQueue.remove(process);
                 DieList.add(process);
                 process = ReadyQueue.poll();
-            } else if (!ReadyQueue.isEmpty() && process.getAG() > pick().getAG()) {
+            } else if (!ReadyQueue.isEmpty() && pick() != null && process.getAG() > pick().getAG()) {
                 if (process.getQuantumTime() > ReadyQueue.peek().getArrivalTime() && ReadyQueue.peek().getArrivalTime() != 0) {
                     process.remBurstTime = process.remBurstTime - ReadyQueue.peek().getArrivalTime();
                     CurrentTime = CurrentTime + ReadyQueue.peek().getArrivalTime();
@@ -121,27 +127,24 @@ public class AG_Scheduling {
                     process = ReadyQueue.poll();
                 }
             }
-            if (ReadyQueue.isEmpty() && process == null) {
-                ReadyQueue.add(WaitingQueue.peek());
-                process = ReadyQueue.poll();
-            }
+            AddToReadyQueue(CurrentTime);
         }
         System.out.println(CurrentTime);
         double z = 0;
         int i = 0;
         for (Map.Entry<String, Double> entry : Turnaround.entrySet()) {
             z = Turnaround.get(entry.getKey());
-            Turnaround.put(entry.getKey(), z - arrival.get(i));
+            Turnaround.put(entry.getKey(), Math.max((z - arrival.get(i)), 0));
             System.out.println("Process ID: " + entry.getKey() + ", Turnaround Time: " + entry.getValue());
-            AvgTurnaroundTime = AvgWaitingTime + entry.getValue();
+            AvgTurnaroundTime = AvgTurnaroundTime + entry.getValue();
             i++;
         }
         AvgTurnaroundTime = AvgTurnaroundTime / Turnaround.size();
         System.out.println("Average Turnaround Time: " + AvgTurnaroundTime);
-        z= 0;
-        while (!DieList.isEmpty()){
+        z = 0;
+        while (!DieList.isEmpty()) {
             z = Turnaround.get(DieList.peek().getID());
-            waitingTime.put(DieList.peek().getID(), (z - DieList.peek().getBurstTime()));
+            waitingTime.put(DieList.peek().getID(), (Math.max((z - DieList.peek().getBurstTime()), 0)));
             DieList.poll();
         }
         for (Map.Entry<String, Double> entry : waitingTime.entrySet()) {
