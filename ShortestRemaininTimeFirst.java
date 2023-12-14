@@ -71,12 +71,6 @@ public class ShortestRemaininTimeFirst {
                     p2.remBurstTime--;
                     time++;
                 }
-                for(Process process: outputVector){
-                    process.WaitingTime++;
-                    if(process.WaitingTime >= starvation){
-                        process.setPriorityNumber(process.getPriorityNumber() + 1);
-                    }
-                }
             }
             else{
                 flag = 0;
@@ -91,17 +85,17 @@ public class ShortestRemaininTimeFirst {
                     p.remBurstTime--;
                     time++;
                 }
-                for(Process process: outputVector){
-                    process.WaitingTime++;
-                    if(process.WaitingTime >= starvation){
-                        process.setPriorityNumber(process.getPriorityNumber() + 1);
-                    }
-                }
             }
             this.pVector.get(index).WaitingTime += this.pVector.get(index).StartTime - this.pVector.get(index).getArrivalTime();
             this.pVector.get(index).TurnaroundTime = this.pVector.get(index).WaitingTime + this.pVector.get(index).getBurstTime() - this.pVector.get(index).remBurstTime;
             System.out.println("Time: "+ this.pVector.get(index).StartTime + " ::Process " + this.pVector.get(index).getID() + " => Waiting Time = "+ this.pVector.get(index).WaitingTime + ",  TurnAround Time = "+ this.pVector.get(index).TurnaroundTime);
             this.pVector.get(index).setArrivalTime(time);
+            for(Process process: outputVector){
+                process.WaitingTime++;
+                if(process.WaitingTime >= starvation){
+                    process.setPriorityNumber(process.getPriorityNumber() + 1);
+                }
+            }
             if(pVector.get(index).remBurstTime == 0){
                 if(flag == 1){
                     this.pVector2.add(p2);
@@ -126,5 +120,8 @@ public class ShortestRemaininTimeFirst {
         this.AvgTurnaroundTime = totalturnaround / pVector2.size();
         System.out.println("Average Waiting Time = " + AvgWaitingTime);
         System.out.println("Average TurnAround Time = "+ AvgTurnaroundTime);
+    }
+    public Vector<Process> getProcesses(){
+        return pVector2;
     }
 }
