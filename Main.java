@@ -5,12 +5,13 @@ public class Main {
         int option = 1;
         ShortestRemaininTimeFirst SRTF = new ShortestRemaininTimeFirst();
         ShortestJobFirst SJF = new ShortestJobFirst();
+        AG_Scheduling ag_scheduling = new AG_Scheduling();
         System.out.print("Number of processes: ");
         int NumberOfProcesses = Integer.parseInt(input.nextLine().trim());
         System.out.print("Round Robin Time Quantum: ");
         int RoundRobinTimeQuantum = Integer.parseInt(input.nextLine().trim());
         System.out.print("context switching: ");
-        int contextswitching = Integer.parseInt(input.nextLine().trim());
+        int contextSwitching = Integer.parseInt(input.nextLine().trim());
         for(int i = 0; i < NumberOfProcesses; i++){
             System.out.print("Process Name " + (i + 1) + ": ");
             String ProcessName = input.nextLine().trim();
@@ -25,6 +26,7 @@ public class Main {
             Process p = new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor);
             SRTF.Adding(p);
             SJF.Adding(p);
+            ag_scheduling.Adding_Process(p,RoundRobinTimeQuantum);
         }
         while (option != 0) {
             System.out.println("1) Shortest- Job First\n2) Shortest- Remaining Time First\n3) Priority Scheduling\n4) AG Scheduling\n0) Exit");
@@ -33,7 +35,7 @@ public class Main {
                 case 1:
                     System.out.println("--------------------------------------------------------------------------------------");
                     System.out.println("Shortest Job First Schedule:");
-                    SJF.setContextSwiching(contextswitching);
+                    SJF.setContextSwiching(contextSwitching);
                     SJF.RunSJF();
                     SJF.Printing();
                     System.out.println("--------------------------------------------------------------------------------------");
@@ -44,6 +46,11 @@ public class Main {
                     SRTF.RunSRTF();
                     SRTF.Printing();
                     System.out.println("--------------------------------------------------------------------------------------");
+                    break;
+                case 4:
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    System.out.println("AG Schedule:");
+                    ag_scheduling.RUN_AG();
                     break;
                 case 0:
                 default:
@@ -62,6 +69,5 @@ public class Main {
         SRTF.RunSRTF();
         SRTF.Printing();
         System.out.println("--------------------------------------------------------------------------------------");*/
-        //schedulingGUI schedulingGUI = new schedulingGUI(SRTF.getProcesses());
     }
 }

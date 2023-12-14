@@ -4,12 +4,12 @@ public class AG_Scheduling {
     private double AvgWaitingTime = 0;
     private double AvgTurnaroundTime = 0;
     private static double CurrentTime = 0;
+    private int AG_Factor = 0;
     private Map<String, Double> waitingTime = new HashMap<>();
     private Map<String, Double> Turnaround = new HashMap<>();
     private LinkedList<Integer> arrival = new LinkedList<>();
     private LinkedList<Process> DieList = new LinkedList<>();
-    private int AG_Factor = 0;
-
+    private Map<String, LinkedList<Integer>> HistoryOfQuantum = new HashMap<>();
     private Queue<Process> WaitingQueue = new LinkedList<>();
     private Queue<Process> ReadyQueue = new LinkedList<>();
 
@@ -20,23 +20,22 @@ public class AG_Scheduling {
             AG_Factor = Random_Factor + process.getArrivalTime() + process.getBurstTime();
             process.setAG(AG_Factor);
             process.setQuantumTime(q);
-            System.out.println(AG_Factor);
         } else if (Random_Factor > 10) {
             AG_Factor = 10 + process.getArrivalTime() + process.getBurstTime();
             process.setAG(AG_Factor);
             process.setQuantumTime(q);
-            System.out.println(AG_Factor);
         } else {
             AG_Factor = process.getPriorityNumber() + process.getArrivalTime() + process.getBurstTime();
             process.setAG(AG_Factor);
             process.setQuantumTime(q);
-            System.out.println(AG_Factor);
         }
         WaitingQueue.add(process);
         AddToReadyQueue(4);
         Turnaround.put(process.getID(), process.getQuantumTime() - process.getArrivalTime());
         arrival.add(process.getArrivalTime());
         waitingTime.put(process.getID(), 0.0);
+        LinkedList<Integer> quantum = new LinkedList<>();
+        HistoryOfQuantum.put(process.getID(), quantum);
     }
 
     private void AddToReadyQueue(double clock) {
@@ -89,26 +88,32 @@ public class AG_Scheduling {
                     process.remBurstTime = process.remBurstTime - ReadyQueue.peek().getArrivalTime();
                     CurrentTime = CurrentTime + ReadyQueue.peek().getArrivalTime();
                     Turnaround.put(ReadyQueue.peek().getID(), CurrentTime - ReadyQueue.peek().getArrivalTime());
+                    LinkedList<Integer> ListFroKey = HistoryOfQuantum.get(process.getID());
+                    ListFroKey.add((int) process.getQuantumTime());
+                    HistoryOfQuantum.put(process.getID(), ListFroKey);
                     process.setQuantumTime(process.getQuantumTime() + (ReadyQueue.peek().getArrivalTime() - time));
-                    System.out.println("Process " + process.getID() + " execute-1 " + ReadyQueue.peek().getArrivalTime());
+                    System.out.println("Process " + process.getID() + " execute " + ReadyQueue.peek().getArrivalTime());
                     ReadyQueue.add(process);
                     process = ReadyQueue.poll();
                 } else {
                     process.remBurstTime = (int) (process.remBurstTime - time);
                     CurrentTime = CurrentTime + time;
                     Turnaround.put(process.getID(), CurrentTime);
+                    LinkedList<Integer> ListFroKey = HistoryOfQuantum.get(process.getID());
+                    ListFroKey.add((int) process.getQuantumTime());
+                    HistoryOfQuantum.put(process.getID(), ListFroKey);
                     process.setQuantumTime(process.getQuantumTime() + (process.getQuantumTime() - time));
-                    System.out.println("Process " + process.getID() + " execute-2 " + time);
+                    System.out.println("Process " + process.getID() + " execute " + time);
                     ReadyQueue.add(process);
                     process = pick();
                     ReadyQueue.remove(pick());
                 }
             } else {
                 if (process.getQuantumTime() > process.remBurstTime) {
-                    System.out.println("Process " + process.getID() + " execute-3 " + process.remBurstTime);
+                    System.out.println("Process " + process.getID() + " execute " + process.remBurstTime);
                     CurrentTime = CurrentTime + process.remBurstTime;
                 } else {
-                    System.out.println("Process " + process.getID() + " execute-4 " + process.getQuantumTime());
+                    System.out.println("Process " + process.getID() + " execute " + process.getQuantumTime());
                     CurrentTime = CurrentTime + process.getQuantumTime();
                 }
                 Turnaround.put(process.getID(), CurrentTime);
@@ -121,6 +126,9 @@ public class AG_Scheduling {
                     mean = mean / ReadyQueue.size();
                 }
                 time = Math.ceil(0.1 * mean);
+                LinkedList<Integer> ListFroKey = HistoryOfQuantum.get(process.getID());
+                ListFroKey.add((int) process.getQuantumTime());
+                HistoryOfQuantum.put(process.getID(), ListFroKey);
                 process.setQuantumTime(process.getQuantumTime() + time);
                 if (!ReadyQueue.isEmpty()) {
                     ReadyQueue.add(process);
@@ -153,5 +161,9 @@ public class AG_Scheduling {
         }
         AvgWaitingTime = AvgWaitingTime / waitingTime.size();
         System.out.println("Average Turnaround Time: " + AvgWaitingTime);
+        for (Map.Entry<String, LinkedList<Integer>> entry : HistoryOfQuantum.entrySet()) {
+            System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
+        }
     }
+
 }
