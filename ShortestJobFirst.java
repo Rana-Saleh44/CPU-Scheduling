@@ -53,7 +53,7 @@ public class ShortestJobFirst {
                 p.remBurstTime--;
                 time++;
             }
-            this.pVector.get(index).WaitingTime += this.pVector.get(index).StartTime - this.pVector.get(index).getArrivalTime();
+            this.pVector.get(index).WaitingTime += (this.pVector.get(index).StartTime - this.pVector.get(index).getArrivalTime()) + contextswitching;
             this.pVector.get(index).TurnaroundTime = this.pVector.get(index).WaitingTime + this.pVector.get(index).getBurstTime() - this.pVector.get(index).remBurstTime;
             System.out.println("Time: "+ this.pVector.get(index).StartTime + " ::Process " + this.pVector.get(index).getID() + " => Waiting Time = "+ this.pVector.get(index).WaitingTime + ",  TurnAround Time = "+ this.pVector.get(index).TurnaroundTime);
             this.pVector.get(index).setArrivalTime(time);
