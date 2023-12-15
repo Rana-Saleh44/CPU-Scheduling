@@ -3,7 +3,7 @@
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args){
+    public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         ShortestRemaininTimeFirst SRTF = new ShortestRemaininTimeFirst();
         ShortestJobFirst SJF = new ShortestJobFirst();
@@ -15,7 +15,7 @@ public class Main {
         int RoundRobinTimeQuantum = Integer.parseInt(input.nextLine().trim());
         System.out.print("context switching: ");
         int contextSwitching = Integer.parseInt(input.nextLine().trim());
-        for(int i = 0; i < NumberOfProcesses; i++){
+        for (int i = 0; i < NumberOfProcesses; i++) {
             System.out.print("Process Name " + (i + 1) + ": ");
             String ProcessName = input.nextLine().trim();
             System.out.print("Process Color " + (i + 1) + ": ");
@@ -30,7 +30,7 @@ public class Main {
             Process p2 = new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, ProcessPriorityNumber, ProcessColor);
             SRTF.Adding(new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor));
             SJF.Adding(new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor));
-            ag_scheduling.Adding_Process(p,RoundRobinTimeQuantum);
+            ag_scheduling.Adding_Process(p, RoundRobinTimeQuantum);
             priorityScheduler.Processes.add(p2);
         }
         System.out.println("--------------------------------------------------------------------------------------");
@@ -38,23 +38,24 @@ public class Main {
         SJF.setContextSwiching(contextSwitching);
         SJF.RunSJF();
         SJF.Printing();
-        ProcessColor GUI1 = new ProcessColor(SJF.getProcesses());
+        ProcessColor pc1 = new ProcessColor(SJF.getProcesses());
         System.out.println("--------------------------------------------------------------------------------------");
 
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("Shortest Remaining Time First Schedule:");
         SRTF.RunSRTF();
         SRTF.Printing();
-       // ProcessColor GUI2 = new ProcessColor(SRTF.getProcesses());
+        //ProcessColor pc1 = new ProcessColor(SJF.getProcesses());
         System.out.println("--------------------------------------------------------------------------------------");
-        
+
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("Priority Schedule:");
         priorityScheduler.Run_PriorityScheduler();
-        
+
         System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("AG Schedule:");
-        ag_scheduling.RUN_AG();
+        //ag_scheduling.RUN_AG();
+
         input.close();
     }
 }
