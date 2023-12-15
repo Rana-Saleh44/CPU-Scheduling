@@ -45,7 +45,7 @@ public class Main {
         System.out.println("Shortest Remaining Time First Schedule:");
         SRTF.RunSRTF();
         SRTF.Printing();
-        //ProcessColor pc1 = new ProcessColor(SJF.getProcesses());
+        //ProcessColor pc2 = new ProcessColor(SRTF.getProcesses());
         System.out.println("--------------------------------------------------------------------------------------");
 
         System.out.println("--------------------------------------------------------------------------------------");
