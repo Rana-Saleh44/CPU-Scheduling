@@ -1,7 +1,6 @@
 import java.util.Scanner;
-
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args){
         Scanner input = new Scanner(System.in);
         int option = 1;
         ShortestRemaininTimeFirst SRTF = new ShortestRemaininTimeFirst();
@@ -14,7 +13,7 @@ public class Main {
         int RoundRobinTimeQuantum = Integer.parseInt(input.nextLine().trim());
         System.out.print("context switching: ");
         int contextSwitching = Integer.parseInt(input.nextLine().trim());
-        for (int i = 0; i < NumberOfProcesses; i++) {
+        for(int i = 0; i < NumberOfProcesses; i++){
             System.out.print("Process Name " + (i + 1) + ": ");
             String ProcessName = input.nextLine().trim();
             System.out.print("Process Color " + (i + 1) + ": ");
@@ -29,41 +28,44 @@ public class Main {
             Process p2 = new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, ProcessPriorityNumber, ProcessColor);
             SRTF.Adding(new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor));
             SJF.Adding(new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor));
-            ag_scheduling.Adding_Process(p, RoundRobinTimeQuantum);
+            ag_scheduling.Adding_Process(p,RoundRobinTimeQuantum);
             priorityScheduler.Processes.add(p2);
         }
-        System.out.println("1) Shortest- Job First\n2) Shortest- Remaining Time First\n3) Priority Scheduling\n4) AG Scheduling\n0) Exit");
-        option = Integer.parseInt(input.nextLine().trim());
-        switch (option) {
-            case 1:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("Shortest Job First Schedule:");
-                SJF.setContextSwiching(contextSwitching);
-                SJF.RunSJF();
-                SJF.Printing();
-                System.out.println("--------------------------------------------------------------------------------------");
-                break;
-            case 2:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("Shortest Remaining Time First Schedule:");
-                SRTF.RunSRTF();
-                SRTF.Printing();
-                System.out.println("--------------------------------------------------------------------------------------");
-                break;
-            case 3:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("Priority Schedule:");
-                priorityScheduler.Run_PriorityScheduler();
-                break;
-            case 4:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("AG Schedule:");
-                ag_scheduling.RUN_AG();
-                break;
-            case 0:
-            default:
-                break;
-
+        while (option != 0) {
+            System.out.println("1) Shortest- Job First\n2) Shortest- Remaining Time First\n3) Priority Scheduling\n4) AG Scheduling\n0) Exit");
+            option = Integer.parseInt(input.nextLine().trim());
+            switch (option) {
+                case 1:
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    System.out.println("Shortest Job First Schedule:");
+                    SJF.setContextSwiching(contextSwitching);
+                    SJF.RunSJF();
+                    SJF.Printing();
+                    ProcessColor GUI1 = new ProcessColor(SJF.getProcesses());
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    break;
+                case 2:
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    System.out.println("Shortest Remaining Time First Schedule:");
+                    SRTF.RunSRTF();
+                    SRTF.Printing();
+                    ProcessColor GUI2 = new ProcessColor(SRTF.getProcesses());
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    break;
+                case 3:
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    System.out.println("Priority Schedule:");
+                    priorityScheduler.Run_PriorityScheduler();
+                    break;
+                case 4:
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    System.out.println("AG Schedule:");
+                    ag_scheduling.RUN_AG();
+                    break;
+                case 0:
+                default:
+                    break;
+            }
         }
         input.close();
         /*System.out.println("--------------------------------------------------------------------------------------");
