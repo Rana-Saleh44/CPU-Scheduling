@@ -30,7 +30,6 @@ public class Main {
             ag_scheduling.Adding_Process(p,RoundRobinTimeQuantum);
             priorityScheduler.Processes.add(p);
         }
-        while (option != 0) {
             System.out.println("1) Shortest- Job First\n2) Shortest- Remaining Time First\n3) Priority Scheduling\n4) AG Scheduling\n0) Exit");
             option = Integer.parseInt(input.nextLine().trim());
             switch (option) {
@@ -63,8 +62,6 @@ public class Main {
                 default:
                     break;
             }
-            
-        }
         input.close();
         /*System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("Shortest Job First Schedule:");
