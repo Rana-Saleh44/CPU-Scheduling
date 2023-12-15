@@ -6,6 +6,7 @@ public class Main {
         ShortestRemaininTimeFirst SRTF = new ShortestRemaininTimeFirst();
         ShortestJobFirst SJF = new ShortestJobFirst();
         AG_Scheduling ag_scheduling = new AG_Scheduling();
+        PriorityScheduler priorityScheduler = new PriorityScheduler();
         System.out.print("Number of processes: ");
         int NumberOfProcesses = Integer.parseInt(input.nextLine().trim());
         System.out.print("Round Robin Time Quantum: ");
@@ -27,6 +28,7 @@ public class Main {
             SRTF.Adding(p);
             SJF.Adding(p);
             ag_scheduling.Adding_Process(p,RoundRobinTimeQuantum);
+            priorityScheduler.Processes.add(p);
         }
         while (option != 0) {
             System.out.println("1) Shortest- Job First\n2) Shortest- Remaining Time First\n3) Priority Scheduling\n4) AG Scheduling\n0) Exit");
@@ -46,6 +48,11 @@ public class Main {
                     SRTF.RunSRTF();
                     SRTF.Printing();
                     System.out.println("--------------------------------------------------------------------------------------");
+                    break;
+                case 3:
+                    System.out.println("--------------------------------------------------------------------------------------");
+                    System.out.println("Priority Schedule:");
+                    priorityScheduler.Run_PriorityScheduler();
                     break;
                 case 4:
                     System.out.println("--------------------------------------------------------------------------------------");

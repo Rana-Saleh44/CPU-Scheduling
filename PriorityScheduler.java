@@ -6,11 +6,8 @@ import java.util.PriorityQueue;
 import java.util.*;
 
 public class PriorityScheduler {
-    Process p1 = new Process("Process 1",0,7,3, "Red");
-    Process p2 = new Process("Process 2",2,5,11, "Green");
-    Process p3 = new Process("Process 3",3,8,2, "Yellow");
-    ArrayList<Process> Processes = new ArrayList<>();
-    PriorityScheduler()
+    public ArrayList<Process> Processes = new ArrayList<>();
+    public void Run_PriorityScheduler()
     {
         int waitingTime = 0;
         int tempWait = 0;
@@ -18,9 +15,6 @@ public class PriorityScheduler {
         double totalWaitingTime = 0;
         double totalTurnaroundTime = 0;
         int totalSleepTime = 0;
-        Processes.add(0,p1);
-        Processes.add(1,p2);
-        Processes.add(2,p3);
         Collections.sort(Processes, Comparator.comparingInt(p -> p.getPriorityNumber()));
         for (Process process : Processes)
         {
@@ -56,10 +50,6 @@ public class PriorityScheduler {
         double avgTurnaroundTime = (double) totalTurnaroundTime / Processes.size();
         System.out.println("\n-Average Waiting Time: " + avgWaitingTime);
         System.out.println("-Average Turnaround Time: " + avgTurnaroundTime);
-    }
-    public static void main(String[] args)
-    {
-        PriorityScheduler p1 = new PriorityScheduler();
     }
 }
 
