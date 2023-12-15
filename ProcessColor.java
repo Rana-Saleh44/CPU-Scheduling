@@ -6,13 +6,13 @@ import java.util.Vector;
 
 import javax.swing.*;
 
-class schedulingGUI {
+class ProcessColor {
     Vector<Process> Processes = new Vector<>();
     static JFrame frame = new JFrame("CPU Schedulers Simulator");
     static GridBagConstraints gbc = new GridBagConstraints();
     static JPanel panel = new JPanel();
 
-    public schedulingGUI(Vector<Process> P) {
+    public ProcessColor(Vector<Process> P) {
         Processes = P;
 
         panel.setLayout(new GridBagLayout());
