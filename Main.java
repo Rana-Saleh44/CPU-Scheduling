@@ -25,11 +25,13 @@ public class Main {
             System.out.print("Process Priority Number " + (i + 1) + ": ");
             int ProcessPriorityNumber = Integer.parseInt(input.nextLine().trim());
             Process p = new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor);
-            SRTF.Adding(p);
-            SJF.Adding(p);
+            Process p2 = new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, ProcessPriorityNumber, ProcessColor);
+            SRTF.Adding(new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor));
+            SJF.Adding(new Process(ProcessName, ProcessArrivalTime, ProcessBurstTime, 0, ProcessColor));
             ag_scheduling.Adding_Process(p,RoundRobinTimeQuantum);
-            priorityScheduler.Processes.add(p);
+            priorityScheduler.Processes.add(p2);
         }
+        while (option != 0) {
             System.out.println("1) Shortest- Job First\n2) Shortest- Remaining Time First\n3) Priority Scheduling\n4) AG Scheduling\n0) Exit");
             option = Integer.parseInt(input.nextLine().trim());
             switch (option) {
@@ -62,6 +64,7 @@ public class Main {
                 default:
                     break;
             }
+        }
         input.close();
         /*System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("Shortest Job First Schedule:");
