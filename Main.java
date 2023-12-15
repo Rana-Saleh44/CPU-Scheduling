@@ -32,39 +32,27 @@ public class Main {
             ag_scheduling.Adding_Process(p, RoundRobinTimeQuantum);
             priorityScheduler.Processes.add(p2);
         }
-        System.out.println("1) Shortest- Job First\n2) Shortest- Remaining Time First\n3) Priority Scheduling\n4) AG Scheduling\n0) Exit");
-        option = Integer.parseInt(input.nextLine().trim());
-        switch (option) {
-            case 1:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("Shortest Job First Schedule:");
-                SJF.setContextSwiching(contextSwitching);
-                SJF.RunSJF();
-                SJF.Printing();
-                System.out.println("--------------------------------------------------------------------------------------");
-                break;
-            case 2:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("Shortest Remaining Time First Schedule:");
-                SRTF.RunSRTF();
-                SRTF.Printing();
-                System.out.println("--------------------------------------------------------------------------------------");
-                break;
-            case 3:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("Priority Schedule:");
-                priorityScheduler.Run_PriorityScheduler();
-                break;
-            case 4:
-                System.out.println("--------------------------------------------------------------------------------------");
-                System.out.println("AG Schedule:");
-                ag_scheduling.RUN_AG();
-                break;
-            case 0:
-            default:
-                break;
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("Shortest Job First Schedule:");
+        SJF.setContextSwiching(contextSwitching);
+        SJF.RunSJF();
+        SJF.Printing();
+        System.out.println("--------------------------------------------------------------------------------------");
 
-        }
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("Shortest Remaining Time First Schedule:");
+        SRTF.RunSRTF();
+        SRTF.Printing();
+        System.out.println("--------------------------------------------------------------------------------------");
+
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("Priority Schedule:");
+        priorityScheduler.Run_PriorityScheduler();
+
+        System.out.println("--------------------------------------------------------------------------------------");
+        System.out.println("AG Schedule:");
+        ag_scheduling.RUN_AG();
+
         input.close();
         /*System.out.println("--------------------------------------------------------------------------------------");
         System.out.println("Shortest Job First Schedule:");
